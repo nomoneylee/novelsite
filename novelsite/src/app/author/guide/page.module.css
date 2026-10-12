@@ -1,0 +1,120 @@
+/* ─────────────────────────────────────────────
+   author/guide/page.module.css — 創作指南
+   ───────────────────────────────────────────── */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.step {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.step__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.step__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin-bottom: var(--space-2);
+}
+
+.step__body {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  line-height: var(--leading-relaxed);
+}
+
+.tips {
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.tips__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+}
+
+.tips__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips__item {
+  position: relative;
+  padding-left: var(--space-5);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.tips__item::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+}
+
+.cta {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space-2);
+}
+
+.cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-bg);
+  background: var(--color-accent);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-8);
+  text-decoration: none;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.cta__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}

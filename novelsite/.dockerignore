@@ -1,0 +1,50 @@
+# 建置脈絡的排除清單（FEAT-6 / T033）
+#
+# 沒有這個檔案時 `COPY . .` 會把下面每一項都送進建置脈絡，其中兩項是實害：
+#   - `node_modules/`：本機是 Windows 平台的原生模組（@node-rs/argon2、better-sqlite3），
+#     覆蓋掉容器內 `npm ci` 裝好的 linux 版本後，症狀是執行期才爆的載入錯誤
+#   - `.env`：密鑰會進入建置脈絡與映像層，`docker history` 讀得到
+#
+# 其餘各項只是讓脈絡變大、建置變慢。
+
+# 相依與建置產物
+node_modules
+.next
+out
+src/generated
+
+# 密鑰與本機設定（**MUST 排除**）
+.env
+.env.*
+!.env.test
+
+# 版控與 IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# 測試產物（**`tests/` 本身 MUST NOT 排除**）
+#
+# `playwright.config.ts` 與三個 `vitest.*.config.mts` 都 `import './tests/testEnv'`，
+# 而 `next build` 會對 tsconfig 涵蓋的檔案跑型別檢查 —— 排除 `tests/` 的結果是
+# **容器內的建置與本機的 `npm run build` 檢查到不同的檔案集合**，
+# 症狀是「本機建得起來、進 Docker 就 `Cannot find module './tests/testEnv'`」。
+# 讓兩邊看到同一份輸入，比省下這幾百 KB 重要得多。
+test-results
+playwright-report
+coverage
+.mail-outbox.jsonl
+*.db
+*.db-journal
+
+# 文件（不影響建置，只是脈絡體積）
+*.md
+!README.md
+
+# 雜項
+Dockerfile
+.dockerignore
+npm-debug.log*
+.DS_Store
+Thumbs.db

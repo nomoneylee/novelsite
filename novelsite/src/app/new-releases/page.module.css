@@ -1,0 +1,57 @@
+/* ─────────────────────────────────────────────
+   new-releases/page.module.css — 新書上架
+   ───────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+}
+
+.page__inner {
+  padding-block: var(--space-8) var(--space-12);
+}
+
+.page__header {
+  margin-bottom: var(--space-8);
+}
+
+.page__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-2);
+}
+
+.page__subtitle {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  color: var(--color-subtle);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-subtle);
+  padding: var(--space-10) 0;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .page__title {
+    font-size: var(--text-2xl);
+  }
+}

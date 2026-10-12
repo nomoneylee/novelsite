@@ -1,0 +1,582 @@
+// NovelSite Prisma 資料模型定義（唯一一份，不含 datasource / generator）
+// ========================================================================
+// datasource 與 generator 依 DATABASE_PROVIDER 分別定義於
+// prisma/headers/{sqlite,postgres}.prisma，由 scripts/build-schema.ts 拼接成
+// prisma/generated/schema.{sqlite,postgres}.prisma（Prisma 7.9 不支援
+// `provider = env(...)`，見 research.md R-3）。
+//
+// 上層應用程式一律透過 src/lib/repositories/* 存取資料，不直接依賴 Prisma 或
+// 特定資料庫，故 DB 抽換不影響頁面與元件。
+//
+// 雙軌相容性守則（FR-024）：不使用 enum、不使用純量陣列、不使用 provider 專屬標註。
+// SQLite 不支援原生字串陣列，故多值關係一律以 join table 表達（Tag/NovelTag、NovelRelation），
+// 不使用純量陣列，亦不再以逗號分隔字串儲存（FEAT-2 2-A 已移除該 workaround）。
+
+// ─────────────────────────────────────────────
+// 作品（Novel）
+// ─────────────────────────────────────────────
+model Novel {
+  id          String  @id
+  title       String
+  authorId    String
+  author      User    @relation(fields: [authorId], references: [id])
+  cover       String?
+  coverColor  String
+  categoryId  String
+  categoryRel Category @relation(fields: [categoryId], references: [id])
+  wordCount   Int
+  chapterCount Int
+  rating      Float
+  excerpt     String
+  isFeatured  Boolean @default(false)
+  weeklyViews Int     @default(0)
+  updateFreq  String?
+
+  // 詳情頁欄位（NovelDetail），非詳情作品可為預設值
+  description   String  @default("")
+  status        String  @default("draft")   // draft | published | admin_suspended（發佈狀態，作者側過濾依此）
+  serialStatus  String  @default("ongoing") // ongoing | completed | hiatus（連載狀態，公開詳情頁顯示依此）
+  // 註（FEAT-3 3-B）：原 `authorBio` 已移除，作者簡介的單一真相來源改為 `User.bio`（FR-025）。
+  // 領域型別 `NovelDetail.authorBio` 名稱不變，改由 mappers 自 `author.bio` 取值。
+  totalViews    Int     @default(0)
+  favoriteCount Int     @default(0)
+  commentCount  Int     @default(0)
+  // 評分人數（FEAT-4 4-B）。`arch.md` §4.2 已列而 base.prisma 缺；計分公式
+  // `rating × ratingCount × 0.5`（FR-045）與「評分人數同步更新」（US2 AC1）皆依賴它
+  ratingCount   Int     @default(0)
+
+  // 上架時間（新書頁排序用；isNew 由此推導，不另存欄位）
+  publishedAt DateTime @default(now())
+
+  // ── 搜尋（FEAT-3 3-A，data-model.md §2）─────────────────────────────
+  // 搜尋預算：title + penName + 分類 label + 標籤 的正規化小寫串，上限 512 字元。
+  // 由服務層於寫入時組裝（`services/searchText.ts` 為唯一實作），不由資料庫推導。
+  searchText String @default("")
+  // 搜尋的主排序鍵（FR-034）。**刻意不用 `@updatedAt`**：那由客戶端在每次 update
+  // 自動覆寫，示範資料載入亦會被蓋成當下時間，兩軌 seed 的時刻不同即使排序的
+  // tie 分布不同，SC-005 的「兩軌結果完全一致」就變成靠時序巧合（research R-4）。
+  updatedAt DateTime @default(now())
+
+  volumes   Volume[]
+  chapters  Chapter[]
+  reviews   Review[]
+  rankings  RankingEntry[]
+  tags      NovelTag[]
+  relations NovelRelation[] @relation("NovelRelationFrom")
+  relatedBy NovelRelation[] @relation("NovelRelationTo")
+
+  // FEAT-4 4-A 讀者狀態 + 4-C 統計（data-model.md §3.4「六個反向關聯」）
+  bookshelf       Bookshelf[]
+  bookshelfEvents BookshelfEvent[]
+  progress        ReadingProgress[]
+  history         ReadingHistory[]
+  views           ChapterView[]
+  stats           NovelDailyStat[]
+
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([publishedAt])
+  @@index([status, publishedAt])
+  // SQLite 的比對索引；PostgreSQL 另有手寫的 pg_trgm GIN（data-model.md §2.3）——
+  // model 定義只有一份，故 PostgreSQL 會多出一個用不到的 btree，代價是少量儲存空間
+  @@index([searchText])
+  // 搜尋與列表的排序鍵
+  @@index([status, updatedAt])
+  // 熱門排序與總榜取值（FEAT-4 4-C）。`arch.md` §4.2 早已列出而 base.prisma 缺；
+  // 隨 `weeklyViews` 的每日回填一併落地（data-model.md §3.4）
+  @@index([weeklyViews])
+}
+
+// ─────────────────────────────────────────────
+// 標籤（Tag）與作品標籤關聯（NovelTag）
+// 說明：Tag 為全域共享實體，同名共用一列，不隨單一 Novel 刪除。
+// ─────────────────────────────────────────────
+model Tag {
+  id     String @id @default(cuid())
+  name   String @unique
+  slug   String @unique
+  novels NovelTag[]
+}
+
+model NovelTag {
+  novelId String
+  tagId   String
+  novel   Novel @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  tag     Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([novelId, tagId])
+  @@index([tagId])
+}
+
+// ─────────────────────────────────────────────
+// 相關作品（NovelRelation）— 方向性 From → To，順序由 sortOrder 決定
+// ─────────────────────────────────────────────
+model NovelRelation {
+  novelId        String
+  relatedNovelId String
+  sortOrder      Int   @default(0)
+  novel        Novel @relation("NovelRelationFrom", fields: [novelId], references: [id], onDelete: Cascade)
+  relatedNovel Novel @relation("NovelRelationTo", fields: [relatedNovelId], references: [id], onDelete: Cascade)
+
+  @@id([novelId, relatedNovelId])
+  @@index([relatedNovelId])
+}
+
+// ─────────────────────────────────────────────
+// 分捲（Volume）與 章節（Chapter）
+// ─────────────────────────────────────────────
+model Volume {
+  id       String @id
+  number   Int
+  title    String
+  novelId  String
+  novel    Novel  @relation(fields: [novelId], references: [id], onDelete: Cascade)
+
+  chapters Chapter[]
+
+  // 卷編號在同一作品內唯一（FR-003d）：由服務層指派為「該作品最大卷編號 + 1」，
+  // 併發建卷撞號時由資料層擋下，服務層再轉譯為 CONFLICT
+  @@unique([novelId, number])
+  @@index([novelId])
+}
+
+model Chapter {
+  id          String    @id
+  novelId     String // 反正規化 FK，供不經 volume 的直接查詢
+  novel       Novel     @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  volumeId    String
+  volume      Volume    @relation(fields: [volumeId], references: [id], onDelete: Cascade)
+  number      Int
+  title       String
+  wordCount   Int
+  status      String    @default("draft") // draft | published | admin_suspended；章節可見性的唯一依據，無付費分支
+  publishedAt DateTime? // 原生日期；mapper 對外還原為 YYYY-MM-DD（isLatest 改由最大 number 推導）
+  /// 排程發佈時刻（FEAT-4 4-D，FR-049～FR-051）。**僅 `status='draft'` 時有意義**；
+  /// 發佈成功（不論立即或排程）MUST 於同一交易內清為 `null` —— 這一欄就是重複發佈的
+  /// 唯一防護：不清空的話，下一次掃描會再選中同一章並再發一次追更通知
+  scheduledAt DateTime?
+
+  content ChapterContent?
+
+  // FEAT-4 4-B 章節留言（data-model.md §2.7）
+  comments Comment[]
+
+  @@unique([novelId, number])
+  @@index([volumeId])
+  @@index([novelId, status, number])
+  /// 排程發佈作業的掃描鍵（`status='draft' AND scheduledAt <= now`）
+  @@index([status, scheduledAt])
+}
+
+// ─────────────────────────────────────────────
+// 章節正文（ChapterContent）— 與 Chapter 1:1 分表
+// 說明：列表／目錄查詢 MUST NOT include 本表，避免拖入大 TEXT 欄位（FR-010）。
+// ─────────────────────────────────────────────
+model ChapterContent {
+  chapterId    String   @id
+  chapter      Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  bodyMarkdown String // 作者輸入的 Markdown 原文
+  format       String   @default("markdown") // markdown | plain
+  updatedAt    DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// 互動（FEAT-4 4-B，data-model.md §2.6–2.7、§3.1）
+// 評論、評論按讚、章節留言三張表。
+// 這一組把「讀者說得上話」從展示資料變成可寫入的真實資料：
+// 在此之前 Review 只有 seed 塞進去的示範列，沒有任何寫入路徑。
+// ─────────────────────────────────────────────
+
+/// 作品評論。一人一評（FR-021）；刪除為**硬刪除**，唯一鍵自然釋放（FR-023）。
+model Review {
+  id        String   @id @default(cuid())
+  novelId   String
+  novel     Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  userId    String // 顯示用的作者名與頭像色由關聯 User 遞補
+  user      User     @relation(fields: [userId], references: [id])
+  rating    Int // 1–5
+  content   String // trim 後 1–1000 字（validation/review.ts）
+  // 原 `likes`。讚的真相來源是 `ReviewLike` 的列數，本欄為同一交易內維護的快取值（FR-024）；
+  // 更名為 `likeCount` 與 `Comment.likeCount` 一致（data-model.md §3.1）
+  likeCount Int      @default(0)
+  // visible | hidden。**不含 `deleted`** —— 軟刪除保留該列會使一人一評的唯一鍵
+  // 在「刪除後重新評論」時衝突（FR-023、data-model.md §3.1）
+  status    String   @default("visible")
+  // 原 `publishedAt` 拆為建立與編輯兩個時刻（FR-022）；`latest` 排序取 `createdAt`
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  likes ReviewLike[]
+
+  // 原 `isHot Boolean` 已移除：「熱門」改由 `likeCount DESC` 的伺服器端排序決定
+  // （FR-023a），布林旗標無來源可維護
+  @@unique([novelId, userId]) // FR-021：一人一評
+  @@index([novelId, likeCount, id]) // hot 排序的游標索引（決勝鍵一律 id，FR-023b）
+  @@index([novelId, createdAt, id]) // latest 排序的游標索引
+}
+
+/// 評論按讚。同一人對同一評論最多一次（FR-024）；評論硬刪除時由級聯一併移除。
+model ReviewLike {
+  reviewId  String
+  userId    String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([reviewId, userId])
+  @@index([userId])
+}
+
+/// 章節留言（兩層樓中樓）。
+///
+/// `parent` 為級聯刪除，但使用者刪除 MUST 走墓碑（`status='deleted'`）而非 `delete` ——
+/// 硬刪除會連坐刪光他人掛在下面的回覆，等於用「刪除自己的內容」抹掉別人說過的話（FR-027）。
+/// 級聯只在章節／作品刪除時生效。
+model Comment {
+  id        String    @id @default(cuid())
+  chapterId String
+  userId    String
+  parentId  String?
+  chapter   Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("CommentThread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentThread")
+  content   String // trim 後 1–500 字（validation/comment.ts）
+  // 本階段**無寫入路徑**，值恆為 0（spec Out of Scope）：spec 未定義留言按讚的去重規則
+  // 與通知對象，故保留欄位、不產生資料；UI 亦 MUST NOT 畫出留言按讚控制項（FR-065）
+  likeCount Int       @default(0)
+  status    String    @default("visible") // visible | hidden | deleted
+  createdAt DateTime  @default(now())
+
+  @@index([chapterId, createdAt])
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────
+// 分類（Category）
+// ─────────────────────────────────────────────
+model Category {
+  id          String @id
+  slug        String @unique
+  label       String
+  emoji       String
+  description String
+  color       String
+  bgColor     String
+  sortOrder   Int    @default(0)
+
+  novels Novel[]
+
+  @@index([sortOrder])
+}
+
+// ─────────────────────────────────────────────
+// 排行榜（RankingEntry）— 依週期 + 名次
+// ─────────────────────────────────────────────
+model RankingEntry {
+  id     Int    @id @default(autoincrement())
+  period String // weekly | monthly | alltime
+  rank   Int
+  /// 計分結果（FR-045）：`views×1.0 + favorites×8.0 + comments×4.0 + rating×ratingCount×0.5`。
+  /// FEAT-4 4-D 新增 —— 在此之前名次是手寫的示範資料，沒有任何推導依據（FR-043a）
+  score  Float  @default(0)
+  /// `"all"`（全部分類榜）或 `Category.id`（各分類榜）。
+  /// **刻意不設為 nullable**：`null` 進唯一鍵在兩軌的比較語意都不可靠（research R-10）；
+  /// 亦**不設 FK** —— `"all"` 不是一個分類，掛上外鍵就得為它建一列假分類
+  categoryId  String   @default("all")
+  novelId     String
+  novel       Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  change      String? // up | down | same | new
+  changeCount Int?
+  /// 本列所屬的那一次重算時刻（讀者看到的是「最近一次重算的結果」）
+  computedAt  DateTime @default(now())
+
+  /// 唯一鍵**必須**含 `categoryId`：只用 `[period, rank]` 時，
+  /// 玄幻榜與都市榜的第 1 名會互相排斥，第二個組合直接寫不進去（research R-10）
+  @@unique([period, categoryId, rank])
+  @@index([period, categoryId, rank])
+}
+
+// 註（FEAT-2 2-C）：原本兩張作者專用表（作品管理與草稿章節）已刪除（FR-017）。
+// 它們與公開目錄的 Novel／Chapter 內容重複、且沒有擁有者外鍵；作者向資料改讀
+// Novel（`authorId` + `status`）與 Chapter＋ChapterContent（`status='draft'`）。
+
+// ─────────────────────────────────────────────
+// 使用者（User）與登入工作階段（Session）—— FEAT-1 信任邊界（data-model.md §2–§3）
+// ─────────────────────────────────────────────
+model User {
+  id               String   @id @default(cuid())
+  name             String
+  email            String   @unique // 寫入與比對前正規化（trim + 轉小寫）
+  passwordHash     String // argon2id 雜湊；永不存明碼（FR-004、SC-003）
+  avatarColor      String   @default("linear-gradient(135deg,#d97706,#92400e)")
+  role             String   @default("reader") // reader | author | admin；身分的唯一真相來源（FR-012）
+  penName          String? // 作者筆名；未設定時沿用 name（Novel.author = penName ?? name，research R-2）
+  bio              String   @default("") // 作者簡介的單一真相來源（FEAT-3 FR-025，原 Novel.authorBio）
+  termsAcceptedAt  DateTime // 必填，註冊時寫入（FR-037、FR-038）
+  /// 帳號停權狀態（FR-008）。停權中的使用者 MUST 被阻斷登入與一切寫入
+  isSuspended      Boolean  @default(false)
+  /// 停權時刻。復權時清為 null。用於管理後台顯示「停權於何時」
+  suspendedAt      DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  sessions Session[]
+  novels   Novel[]
+  reviews  Review[]
+
+  // FEAT-4 4-A 讀者狀態（data-model.md §1）。
+  // `BookshelfEvent` **刻意不在此列**：該表的 `userId` 不設 FK，使用者刪除後事件仍須
+  // 保留至保留期結束（data-model.md §2.2），加了反向關聯就等於加了外鍵。
+  bookshelf  Bookshelf[]
+  progress   ReadingProgress[]
+  history    ReadingHistory[]
+  preference ReaderPreference?
+
+  // FEAT-4 4-B 互動（data-model.md §2.6–2.7）
+  reviewLikes ReviewLike[]
+  comments    Comment[]
+
+  // FEAT-4 4-D 站內通知（data-model.md §2.8）。導覽列未讀數以 Prisma 的**過濾式關聯計數**
+  // （`_count.notifications where readAt=null`）與使用者查詢同一次往返取回（research R-6），
+  // 故這一條反向關聯是必要的 —— 少了它就只能另外 `count()` 一次
+  notifications Notification[]
+
+  // FEAT-5：密碼重設憑證。`onDelete: Cascade` 由 `PasswordResetToken` 端宣告，
+  // 使用者刪除時憑證一併消失（與 Session 同處置）
+  passwordResetTokens PasswordResetToken[]
+
+  @@index([role])
+  @@index([isSuspended])
+}
+
+// ─────────────────────────────────────────────
+// 讀者狀態（FEAT-4 4-A，data-model.md §2.1–2.5）
+// 書架、收藏事件、續讀位置、閱讀歷史、閱讀偏好五張表。
+// 這一組的存在理由是「讀者做過的事跟著人走，不跟著瀏覽器走」：
+// 在此之前它們全部只活在 localStorage 裡，換一台裝置就消失。
+// ─────────────────────────────────────────────
+
+/// 收藏關係。同一使用者對同一作品最多一筆（FR-009）。
+model Bookshelf {
+  id        String   @id @default(cuid())
+  userId    String
+  novelId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  novel     Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, novelId])
+  @@index([userId, createdAt])
+  // 追更通知的收件人查詢（FR-052，4-D 用）
+  @@index([novelId])
+}
+
+/// 收藏事件明細。`NovelDailyStat.favorites` 是「當日**淨增**」（FR-036a），
+/// 而移出書架是 `Bookshelf` 的硬刪除、資料庫無移出紀錄；FR-036b 又要求逐日回補，
+/// 排除了「快照相減」。沒有這張表，「淨增」在資料上不可計算（research R-3）。
+model BookshelfEvent {
+  id      String @id @default(cuid())
+  /// **刻意不設 FK**：使用者刪除後事件仍須保留至保留期結束（data-model.md §2.2）
+  userId  String
+  novelId String
+  novel   Novel  @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  /// +1 加入 / -1 移出；值域由服務層保證
+  delta     Int
+  createdAt DateTime @default(now())
+
+  @@index([novelId, createdAt])
+  // 保留期清理（4-C）
+  @@index([createdAt])
+}
+
+/// 續讀位置。每人每作品一筆，`percent` 為 0–100 整數（FR-010）。
+model ReadingProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  novelId   String
+  /// **不設 Chapter 關聯**：續讀點指向的章節可能被下架，那不該連坐刪掉整筆進度；
+  /// 歸屬（chapter 屬於 novel）由服務層核對（Edge Case）
+  chapterId String
+  percent   Int      @default(0)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  novel     Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, novelId])
+  @@index([userId, updatedAt])
+}
+
+/// 閱讀歷史。**非事件序列**：每人每作品一筆最新，再次閱讀為 upsert（FR-013）。
+/// 上限 `READING_HISTORY_MAX`（預設 500 部作品），寫入新作品且已達上限時
+/// 於同一交易內淘汰 `readAt` 最舊者；重讀已在歷史中者只更新該筆、不觸發淘汰。
+model ReadingHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  novelId   String
+  chapterId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  novel     Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  readAt    DateTime @default(now())
+
+  @@unique([userId, novelId])
+  @@index([userId, readAt])
+}
+
+/// 閱讀偏好。同步範圍**只有** `fontSize` 與 `theme`（FR-014）——
+/// 無 `lineHeight`（全站無控制項），無「無干擾模式」（明訂不跨章節記憶）。
+model ReaderPreference {
+  userId    String   @id
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// sm | md | lg（沿用既有本機值域）
+  fontSize  String   @default("md")
+  /// light | dark | eyecare
+  theme     String   @default("light")
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// 統計（FEAT-4 4-C，data-model.md §2.9–2.10）
+// 章節閱讀明細與每日新增量兩張表。
+// 在此之前，全站的「瀏覽量」沒有任何原始紀錄可以反推 —— 儀表板的曲線與
+// 作品頁的閱讀數都是常數，於是沒有人看得出彙總作業其實不存在（FR-043a）。
+// ─────────────────────────────────────────────
+
+/// 章節閱讀明細。去重與「不重複讀者數」**皆只認 `viewerHash`**。
+///
+/// `userId` 刻意**不設 FK**：明細於保留期內須獨立於帳號存在（與 `BookshelfEvent` 同理），
+/// 且匿名閱讀本來就沒有帳號可以指。
+model ChapterView {
+  id         String   @id @default(cuid())
+  chapterId  String
+  novelId    String
+  novel      Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  /// 已登入者可對應帳號（FR-033）；匿名為 null
+  userId     String?
+  /// 登入者 `HMAC(u: + userId)`／匿名 `HMAC(a: + ip + "|" + ua)`（FR-034）。
+  /// **全體讀者皆必填** —— 它是去重的鍵，也是成效總覽比率的分母
+  viewerHash String
+  viewedAt   DateTime @default(now())
+
+  @@index([chapterId, viewedAt])
+  @@index([novelId, viewedAt])
+  /// 去重窗口查詢（`VIEW_DEDUPE_WINDOW_MINUTES` 內同 (viewerHash, chapterId) 不再記）
+  @@index([viewerHash, chapterId])
+  /// 保留期清理（`VIEW_RETENTION_DAYS`）
+  @@index([viewedAt])
+}
+
+/// 每日新增量。三個計數皆為**當日新增量**，非累計快照（FR-036a）——
+/// 快照語意下「近 N 日加總」毫無意義，而排行計分正是那樣取值（data-model.md §7.3）。
+/// `date` 只存**已結束**的日期，當日不建列（FR-036b）。
+model NovelDailyStat {
+  id        String   @id @default(cuid())
+  novelId   String
+  novel     Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  /// 台北 00:00 對應的 UTC 絕對時刻（`lib/time/taipeiDay.ts` 為唯一產生者）
+  date      DateTime
+  /// 當日去重閱讀次數
+  views     Int      @default(0)
+  /// 當日淨增收藏（`SUM(BookshelfEvent.delta)`，可為負）
+  favorites Int      @default(0)
+  /// 當日新增且**當下可見**的留言 ＋ 評論
+  comments  Int      @default(0)
+
+  /// 冪等的落點：彙總以 upsert 寫入，同一日期重跑覆寫而非新增（SC-008）
+  @@unique([novelId, date])
+  @@index([date])
+}
+
+// ─────────────────────────────────────────────
+// 站內通知（FEAT-4 4-D，data-model.md §2.8）
+// 本階段**只產生** `chapter_published`（追更通知，FR-054）；其餘型別保留欄位的值域
+// 但 MUST NOT 產生資料 —— 它們的通知對象與去重規則從未被定義過。
+// ─────────────────────────────────────────────
+model Notification {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// chapter_published | review_reply | comment_reply | system
+  type   String
+  /// **JSON 字串，MUST NOT 用 `Json` 型別**：SQLite 軌對 `Json` 的支援與 PostgreSQL 不同，
+  /// 用它就等於新增一個雙軌分歧點；而通知的酬載本來就只被前端整包讀出來用
+  /// （形狀見 data-model.md §2.8）
+  payload   String    @default("{}")
+  /// `null` 即未讀。導覽列未讀數與列表篩選皆以本欄為準
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  /// 列表分頁（`createdAt DESC, id ASC`）與 90 天保留期清理（`NOTIFICATION_RETENTION_DAYS`）
+  @@index([userId, createdAt])
+  /// 未讀篩選與過濾式關聯計數
+  @@index([userId, readAt])
+}
+
+model Session {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique // sha256(JWT 字串)；原文只存在於瀏覽器 Cookie（FR-006）
+  expiresAt  DateTime // 閒置期限，滑動延展（FR-008）
+  revokedAt  DateTime? // 登出、改密碼、角色變更時寫入（FR-007、FR-041、FR-045）
+  userAgent  String    @default("")
+  ip         String    @default("")
+  createdAt  DateTime  @default(now()) // 絕對上限的起算點
+  lastUsedAt DateTime  @default(now()) // 節流寫入的判斷依據
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ─────────────────────────────────────────────
+// 密碼重設憑證（FEAT-5，data-model.md §2，FR-007～FR-011a）
+// 「某位使用者在某段時間內、有一次機會重設密碼」的授權。
+// ─────────────────────────────────────────────
+model PasswordResetToken {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// sha256(明碼) 的 hex 字串。明碼只存在於「產生 → 組進信件連結 → 寄出」這一段，
+  /// MUST NOT 落庫、MUST NOT 進任何記錄（FR-007）。
+  /// 不用 argon2：256-bit 隨機值沒有字典攻擊面，慢雜湊只會拖慢使用者點連結的當下
+  /// （與 `Session.tokenHash` 同一個問題、同一個答案）。
+  tokenHash  String    @unique
+  expiresAt  DateTime // 建立時刻 + PASSWORD_RESET_TOKEN_TTL_MINUTES（預設 30，FR-008）
+  /// 失效時刻。**一個欄位承載兩種來源**：成功使用一次（FR-009）、或被作廢
+  /// （同一使用者申請新憑證 FR-010／使用者自行改密碼 FR-011）。
+  /// 不拆成兩欄：兩者對「這張憑證還能不能用」的答案完全相同，拆開只會多一個
+  /// 永遠要同時檢查的條件。需要分辨來源時查安全事件記錄，不查這張表。
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ─────────────────────────────────────────────
+// 管理動作稽核紀錄（AuditLog）—— FEAT-9 / 009-admin-dashboard（data-model.md §2.1）
+// 純追加（append-only），無外鍵，diff 為 JSON 字串，MUST NOT 提供修改/刪除介面
+// ─────────────────────────────────────────────
+model AuditLog {
+  id         String   @id @default(cuid())
+  /// 操作者 User ID。MUST NOT 存 email 明文（PII 最小化，Clarification 2026-09-03）
+  actorId    String
+  /// 操作動作別。值域由服務層的 TypeScript union 保證
+  action     String
+  /// 受影響對象類型：user | novel | chapter | comment | tag
+  targetType String
+  /// 受影響對象 ID
+  targetId   String
+  /// 操作前/後差異摘要，JSON 字串（與 Notification.payload 同理，MUST NOT 用 Json 型別）
+  diff       String   @default("{}")
+  /// 操作理由（≤200 字，破壞性操作 MUST 必填）
+  reason     String   @default("")
+  /// 來源 IP。寫入後 90 天 MUST 自動雜湊化（不可逆）
+  ip         String   @default("")
+  createdAt  DateTime @default(now())
+
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+}

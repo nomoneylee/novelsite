@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p novelsite)",
+      "Bash(touch novelsite/.env)",
+      "Bash(POSTGRES_PASSWORD=dummy docker compose -f compose.yml config)",
+      "Bash(echo \"exit=$?\")",
+      "Read(//tmp/**)"
+    ]
+  }
+}

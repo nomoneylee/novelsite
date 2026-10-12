@@ -1,0 +1,109 @@
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* 統計截止日（FEAT-4 4-C）：當日不建列，故最新資料點恆為昨日。
+   不標示的話，作者會把「今天沒有數字」誤判為故障 */
+.throughNote {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  margin: 0;
+}
+
+/* 空狀態（FR-043b）：示範環境的預設樣貌就是全站零互動，故它是主要路徑而非邊角情境 */
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--space-6);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  text-align: center;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.statCard__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-light);
+  color: var(--color-accent-hover);
+  flex-shrink: 0;
+}
+
+.statCard__value {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.statCard__label {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  margin-top: 2px;
+}
+
+.chartCard {
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.chartCard__title {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-fg);
+  margin-bottom: var(--space-4);
+}
+
+.chartCard__body {
+  height: 280px;
+  position: relative;
+}
+
+@media (max-width: 1024px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .chartCard__body {
+    height: 220px;
+  }
+}

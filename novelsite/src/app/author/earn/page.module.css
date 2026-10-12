@@ -1,0 +1,145 @@
+/* ─────────────────────────────────────────────
+   author/earn/page.module.css — 作品成效
+   ───────────────────────────────────────────── */
+
+/* 四項指標的計算期間（FEAT-4 4-C）：統一近 7 日，MUST 於畫面標示 ——
+   不寫出期間，「曝光 12」是七天還是全部歷史就沒有人說得出來 */
+.periodNote {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  margin: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.stat--accent {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent);
+}
+
+.stat__icon {
+  display: inline-flex;
+  color: var(--color-accent);
+}
+
+.stat__value {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.stat__label {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+}
+
+/* ─── 各作品拆分 ─── */
+.breakdown {
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.breakdown__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+}
+
+.breakdown__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row__cover {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+}
+
+.row__title {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+.row__metric {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent);
+}
+
+/* 「尚無資料」與實際數字**刻意不同色**：分母為 0 時顯示 0% 是一句斷言
+   （「來的人都沒讀完」），而事實是「沒有人來過」—— 兩者對作者的意義完全相反 */
+.row__empty {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+}
+
+.disclaimer {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  line-height: var(--leading-relaxed);
+}
+
+@media (max-width: 1024px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

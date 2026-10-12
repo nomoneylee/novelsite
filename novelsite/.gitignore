@@ -1,0 +1,75 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+# 測試環境設定唯一來源，隨 repo 版控（只含測試專用值，見 contracts/env.md §5）
+!.env.test
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+/src/generated/prisma
+/prisma/generated
+
+# prisma sqlite dev / test database
+/dev.db
+/dev.db-journal
+# 手動備份（例如跑 migration 前的 `cp dev.db dev.db.bak-<時間戳>`）。
+# **既有的 `/dev.db` 擋不到它們**——2026-09-06 就有一份 2.5 MB 的
+# `dev.db.bak-20260906-102508` 因此被 commit 進版控。本機開發資料 MUST NOT 進 repo。
+/dev.db.bak-*
+/test.db
+/test.db-journal
+/e2e.db
+/e2e.db-journal
+*.db-shm
+*.db-wal
+
+# FEAT-5：memory 模式的寄件落地檔（測試產物）。
+# 開頭的 `/` 錨定本目錄 —— MAIL_OUTBOX_PATH 的預設基準是 process.cwd()，
+# 而 npm run dev／next start／三套測試的工作目錄一律是 novelsite/（非 repo 根）。
+/.mail-outbox.jsonl
+
+# FEAT-7：測試伺服器 stdout 的落地檔（tests/globalSetup.ts 產生，T031a 讀取）。
+# 基準同 .mail-outbox.jsonl —— 三套測試的工作目錄一律是 novelsite/
+/.server-stdout.log
+
+# playwright（端對端測試產物）
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache

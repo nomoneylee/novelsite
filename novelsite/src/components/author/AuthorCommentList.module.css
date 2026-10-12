@@ -1,0 +1,151 @@
+/* ─────────────────────────────────────────────
+   AuthorCommentList.module.css（FEAT-4 4-B / T079）
+   ───────────────────────────────────────────── */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  color: var(--color-fg);
+  font-size: var(--text-sm);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--color-subtle);
+  font-size: var(--text-sm);
+  background: var(--color-muted);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.item {
+  margin: 0;
+}
+
+.card {
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* 已隱藏：虛線框 + 「已隱藏」文字標籤。狀態 MUST NOT 只靠顏色表達 */
+.card--hidden {
+  border-style: dashed;
+  background: var(--color-muted);
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.card__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-on-accent);
+}
+
+.card__author {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-fg);
+}
+
+.card__badge {
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 1px 8px;
+}
+
+.card__time {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+}
+
+.card__where {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+}
+
+.card__body {
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  color: var(--color-fg);
+  margin: 0 0 var(--space-3);
+}
+
+.card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.card__action:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.more {
+  align-self: center;
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 6px 20px;
+  cursor: pointer;
+}
+
+.more:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}

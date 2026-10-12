@@ -1,0 +1,358 @@
+/* ─────────────────────────────────────────────
+   SiteHeader — 頂部導覽列
+   ───────────────────────────────────────────── */
+
+/* 跳至主要內容連結：離開視窗外，鍵盤 focus 時滑入 */
+.header__skip {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: var(--z-toast, 9999);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  text-decoration: none;
+  transition: transform var(--duration-base, 200ms) var(--ease-out, ease);
+}
+
+.header__skip:focus,
+.header__skip:focus-visible {
+  transform: translate(-50%, 0);
+  outline: 2px solid var(--color-fg);
+  outline-offset: 2px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  transition:
+    background-color var(--duration-base) var(--ease-in-out),
+    box-shadow var(--duration-base) var(--ease-in-out),
+    backdrop-filter var(--duration-base) var(--ease-in-out);
+}
+
+/* 預設：透明（Hero 上方）*/
+.header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  max-width: var(--container-2xl);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+  height: 64px;
+}
+
+/* 捲動後：毛玻璃 */
+.header--scrolled {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Logo ─── */
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.header__logo__icon {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.header__logo__text {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+}
+
+.header__logo:hover .header__logo__text {
+  color: var(--color-accent);
+}
+
+/* ─── 桌面導覽 ─── */
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+
+.header__nav__link {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg-secondary);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.header__nav__link:hover {
+  color: var(--color-primary);
+  background-color: var(--color-muted);
+  text-decoration: none;
+}
+
+/* ─── 右側操作區 ─── */
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.header__icon__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-subtle);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.header__icon__btn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-muted);
+}
+
+.header__theme__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-subtle);
+  font-size: var(--text-sm);
+  font-family: var(--font-ui);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.header__theme__btn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-muted);
+}
+
+.header__theme__label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.header__login__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-accent);
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-ui);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.header__login__btn:hover {
+  background-color: var(--color-accent-hover);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.header__avatar__btn {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-full);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.header__avatar__btn:hover {
+  transform: translateY(-1px);
+}
+
+.header__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  color: white;
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ─── 行動版漢堡按鈕 ─── */
+.header__mobile__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-fg-secondary);
+}
+
+.header__mobile__toggle:hover {
+  background-color: var(--color-muted);
+}
+
+/* ─── 行動版展開選單 ─── */
+.header__mobile__nav {
+  display: none;
+  flex-direction: column;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.header__mobile__nav__link {
+  display: block;
+  padding: var(--space-3) var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.header__mobile__nav__link:hover {
+  color: var(--color-primary);
+  background-color: var(--color-muted);
+  padding-left: var(--space-4);
+  text-decoration: none;
+}
+
+.header__mobile__divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-3) 0;
+}
+
+.header__mobile__login {
+  display: block;
+  text-align: center;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-accent);
+  color: white;
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.header__mobile__login:hover {
+  background-color: var(--color-accent-hover);
+  color: white;
+  text-decoration: none;
+}
+
+/* ─── 響應式 ─── */
+@media (max-width: 1024px) {
+  .header__theme__label {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .header__nav {
+    display: none;
+  }
+
+  .header__login__btn,
+  .header__avatar__btn {
+    display: none;
+  }
+
+  .header__mobile__toggle {
+    display: flex;
+  }
+
+  .header__mobile__nav {
+    display: flex;
+  }
+}
+
+/* ─── 通知未讀徽章（FEAT-4 T136）───
+   數字本身即是標示，顏色只是強調 —— MUST NOT 只靠顏色區分已讀／未讀（FR-064）。
+   色碼一律取自設計 token（憲章技術約束）。 */
+.header__icon__btn {
+  position: relative;
+}
+
+.header__badge {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 18px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  text-align: center;
+}
+
+/* ─── Hero 疊加狀態 ───
+   首頁輪播與作品詳情頁以作品封面色鋪底、再疊一層近黑遮罩（`hero__overlay` /
+   `hero__bg__overlay`）。透明 Header 沿用主題文字色時，淺色主題的深褐字
+   （`--color-fg-secondary`）壓在這層深底上幾乎讀不到。
+   在 Hero 上方時改用 `--color-on-hero` 系列，並自行帶一層 `--hero-scrim` 暗角 ——
+   對比不能交給個別作品的封面色決定（FR-064：色值一律取自 token）。 */
+.header--on-hero {
+  background: var(--hero-scrim);
+}
+
+.header--on-hero .header__logo__text,
+.header--on-hero .header__nav__link,
+.header--on-hero .header__icon__btn,
+.header--on-hero .header__theme__btn,
+.header--on-hero .header__mobile__toggle {
+  color: var(--color-on-hero);
+  text-shadow: var(--hero-text-shadow);
+}
+
+.header--on-hero .header__logo__icon {
+  filter: drop-shadow(var(--hero-text-shadow));
+}
+
+.header--on-hero .header__logo:hover .header__logo__text,
+.header--on-hero .header__nav__link:hover,
+.header--on-hero .header__icon__btn:hover,
+.header--on-hero .header__theme__btn:hover,
+.header--on-hero .header__mobile__toggle:hover {
+  color: var(--color-on-hero-strong);
+  background-color: var(--color-on-hero-hover-bg);
+}

@@ -1,0 +1,171 @@
+/* 通知中心（FEAT-4 T137）。色碼一律取自設計 token —— MUST NOT 硬編（憲章技術約束）。 */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.filters__label {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+}
+
+.filter {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.filter:hover {
+  color: var(--color-primary);
+}
+
+/* 目前篩選以邊框＋文字色同時標示，並帶 aria-current —— 不只靠顏色 */
+.filter--active {
+  color: var(--color-primary);
+  border-color: var(--color-accent);
+}
+
+.markAll {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: none;
+  background: transparent;
+  color: var(--color-subtle);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.markAll:hover:not(:disabled) {
+  color: var(--color-primary);
+}
+
+.markAll:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+}
+
+.item--unread {
+  border-color: var(--color-accent);
+}
+
+.item__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3);
+}
+
+/* 「未讀／已讀」是**文字**，顏色只是強調（FR-064） */
+.item__state {
+  flex-shrink: 0;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-muted);
+  color: var(--color-subtle);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: 1.8;
+}
+
+.item--unread .item__state {
+  background-color: var(--color-accent-light);
+  color: var(--color-accent-hover);
+}
+
+.item__text {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+.item__time {
+  flex-shrink: 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+}
+
+.item__mark {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  border: none;
+  border-left: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-subtle);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.item__mark:hover:not(:disabled) {
+  color: var(--color-primary);
+}
+
+.item__mark:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-subtle);
+  text-align: center;
+}
+
+.empty__hint {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+}

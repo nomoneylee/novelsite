@@ -1,0 +1,273 @@
+/* ─────────────────────────────────────────────
+   ReaderView.module.css
+   ───────────────────────────────────────────── */
+
+.reader {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding-bottom: var(--space-12);
+}
+
+/* ─── 頂部導覽列 ─── */
+.reader__topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.reader__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reader__back:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.reader__chapterNav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.reader__chapterTitle {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .reader__chapterTitle {
+    display: inline;
+  }
+}
+
+.reader__navBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg-secondary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.reader__navBtn:hover:not(:disabled) {
+  color: var(--color-accent);
+  background: var(--color-muted);
+}
+
+.reader__navBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ─── 正文區域 ─── */
+.reader__content {
+  padding: var(--space-10) var(--space-4) var(--space-8);
+}
+
+.reader__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+/* ─── 章末導航 ─── */
+.reader__endNav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.reader__endBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-5);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.reader__endBtn:hover:not(:disabled) {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.reader__endBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.reader__endBtn--accent {
+  color: var(--color-bg);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.reader__endBtn--accent:hover:not(:disabled) {
+  color: var(--color-bg);
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+/* ─── 浮動工具欄 ─── */
+.reader__toolbar {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-6);
+  transform: translateX(-50%);
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  padding-bottom: max(var(--space-2), env(safe-area-inset-bottom));
+}
+
+.reader__toolbarBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  color: var(--color-fg-secondary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.reader__toolbarBtn:hover {
+  color: var(--color-accent);
+  background: var(--color-muted);
+}
+
+/* ─── 無干擾模式 ─── */
+.reader--distraction-free .reader__content {
+  padding-top: var(--space-8);
+}
+
+.reader__exitHint {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-4);
+  z-index: var(--z-sticky);
+}
+
+/* ─── 章節目錄 Drawer 內容 ─── */
+.toc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.toc__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg-secondary);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.toc__item:hover {
+  background: var(--color-muted);
+}
+
+.toc__item--active {
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+  font-weight: var(--font-weight-medium);
+}
+
+.toc__num {
+  flex-shrink: 0;
+  color: var(--color-subtle);
+  font-size: var(--text-xs);
+}
+
+.toc__title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── 行動裝置優化 ─── */
+@media (max-width: 767px) {
+  .reader__content {
+    max-width: 90vw;
+    margin-inline: auto;
+  }
+
+  .reader__toolbarBtn span {
+    display: none;
+  }
+
+  .reader__toolbarBtn {
+    padding: var(--space-3);
+  }
+}

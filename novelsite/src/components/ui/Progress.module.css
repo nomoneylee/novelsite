@@ -1,0 +1,142 @@
+.progress__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+/* ── Sticky 閱讀進度條 ── */
+.progress__wrapper--sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  padding: 0;
+  gap: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* ── Header ── */
+.progress__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress__label {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg-secondary);
+}
+
+.progress__percentage {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Track ── */
+.progress__track {
+  width: 100%;
+  background: var(--color-muted);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Sizes ── */
+.progress__track--xs {
+  height: 2px;
+}
+
+.progress__track--sm {
+  height: 3px;
+}
+
+.progress__track--md {
+  height: 6px;
+}
+
+.progress__track--lg {
+  height: 10px;
+  border-radius: var(--radius-md);
+}
+
+/* Sticky 使用 xs */
+.progress__wrapper--sticky .progress__track {
+  height: var(--progress-height);
+  border-radius: 0;
+  background: transparent;
+}
+
+/* ── Bar ── */
+.progress__bar {
+  height: 100%;
+  transform-origin: left center;
+  border-radius: inherit;
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+.progress__bar--animated {
+  transition: transform 0.15s var(--ease-out);
+}
+
+/* ── Variants ── */
+.progress__bar--default {
+  background: var(--color-accent);
+}
+
+.progress__bar--reading {
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+}
+
+.progress__bar--success {
+  background: var(--color-success);
+}
+
+.progress__bar--warning {
+  background: var(--color-warning);
+}
+
+/* ── Shine Animation ── */
+.progress__bar--animated::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: progress-shine 2s ease-in-out infinite;
+}
+
+@keyframes progress-shine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress__bar {
+    transition-duration: 0.01ms !important;
+  }
+  .progress__bar--animated::after {
+    animation: none !important;
+  }
+}

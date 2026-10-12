@@ -1,0 +1,21 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-8) var(--space-6);
+}
+
+@media (max-width: 1024px) {
+  .shell {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: var(--space-6) var(--space-4);
+  }
+}

@@ -1,0 +1,55 @@
+/* ─────────────────────────────────────────────
+   novels/[id]/page.module.css
+   ───────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+}
+
+/* 主體雙欄佈局 */
+.page__body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-6);
+  padding-block: var(--space-8);
+  align-items: flex-start;
+}
+
+/* 左欄：主要內容 */
+.page__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+/* 右欄：側欄 */
+.page__sidebar {
+  position: sticky;
+  top: calc(var(--header-height, 64px) + var(--space-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* RWD：1024px 以下隱藏側欄，改為底部顯示 */
+@media (max-width: 1024px) {
+  .page__body {
+    grid-template-columns: 1fr;
+  }
+
+  .page__sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 767px) {
+  .page__body {
+    padding-block: var(--space-6);
+    gap: var(--space-5);
+  }
+
+  .page__main {
+    gap: var(--space-4);
+  }
+}

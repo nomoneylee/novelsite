@@ -1,0 +1,22 @@
+# =============================================================================
+# 換行字元規範（FEAT-6 / T041 實測裁示，2026-08-15）
+# =============================================================================
+# 本 repo 的開發機是 Windows 且 `core.autocrlf=true`：**沒有這個檔案時，
+# 每一支 `.sh` 在 checkout 後都會變成 CRLF**，而它們要在 Linux 容器裡執行。
+#
+# 實測到的症狀（本次於 cron 容器內重現）：
+#
+#   deploy/notify.sh: set: line 23: illegal option -
+#
+# ——`set -eu\r` 被 busybox 當成不存在的選項。**失敗通知因此一封都寄不出去**，
+# 而它正是「備份失敗、部署失敗時唯一會出聲的那個機制」。
+# 更嚴重的是 `docker-entrypoint.sh`：`#!/bin/sh\r` 會讓 ENTRYPOINT 直接
+# `no such file or directory`，**容器根本起不來**。
+#
+# 這一類問題不會在 Windows 上被發現，也不會有任何一行訊息提到換行字元。
+#
+# **範圍刻意只涵蓋「會被 Linux 直接執行的檔案」**，MUST NOT 擴大成 `* text=auto eol=lf`
+# ——那會把整個 repo 的既有檔案一次重新正規化，與本階段無關（憲章「變更範圍」）。
+
+*.sh text eol=lf
+deploy/cron/crontab text eol=lf

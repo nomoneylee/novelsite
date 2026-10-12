@@ -1,0 +1,240 @@
+/* ─────────────────────────────────────────────
+   SearchView — 全站搜尋
+   ───────────────────────────────────────────── */
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ─── 搜尋列 ─── */
+.searchBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: var(--container-md);
+  margin-inline: auto;
+  width: 100%;
+}
+
+.searchBar__icon {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-subtle);
+  pointer-events: none;
+}
+
+.searchBar__input {
+  flex: 1;
+  padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + 28px);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  color: var(--color-fg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.searchBar__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.searchBar__submit {
+  flex-shrink: 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-bg);
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-6);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.searchBar__submit:hover {
+  background: var(--color-accent-hover);
+}
+
+/* 視覺上隱藏但保留給輔助技術（輸入框的 label） */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── 即時建議清單（combobox） ─── */
+.suggestions {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  right: 0;
+  z-index: 20;
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md, 0 8px 24px rgb(0 0 0 / 12%));
+}
+
+.suggestions[hidden] {
+  display: none;
+}
+
+.suggestion {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+/*
+  鍵盤高亮（FR-018 第三類、SC-009）。
+
+  **`background` 一項不夠，這是 T034 實測出來的**（`/speckit-implement`，2026-09-06）：
+  `--color-muted` 壓 `--color-surface`（下拉本體）的對比在三個主題分別只有
+  **1.13:1（light）／1.03:1（dark）／1.06:1（eyecare）** —— 遠低於 WCAG 1.4.11
+  對非文字 UI 狀態的 3:1，實際上等於看不見。原本的 `var(--color-bg-subtle, var(--color-bg))`
+  更糟，但換成 `--color-muted` 之後**仍然不合格**：規格假設「換一個 token 就會有可辨識差異」，
+  而實測顯示這一組 token 之間本來就沒有那麼多明度差。
+
+  故另加一道 `outline`：`--color-accent` 壓 `--color-surface` 為
+  **3.20:1（light）／8.24:1（dark）／4.03:1（eyecare）**，三主題皆過 3:1。
+  這也與本專案其他鍵盤焦點指示（`outline: 2px solid var(--color-accent)`）一致。
+  `outline-offset` 取負值，讓框畫在列內側 —— 正值會超出下拉的內距。
+*/
+.suggestion--active {
+  background: var(--color-muted);
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.suggestion__title {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+.suggestion__author {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+}
+
+/* ─── 分類篩選 ─── */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: var(--container-md);
+  margin-inline: auto;
+  width: 100%;
+}
+
+.filters__label {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+}
+
+.filters__select {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+}
+
+/* ─── 載入更多 ─── */
+.loadMore {
+  align-self: center;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-8);
+  cursor: pointer;
+}
+
+.loadMore:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+
+.loadMore:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.loadError {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-error);
+}
+
+/* ─── 結果統計 ─── */
+.resultCount {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+}
+
+.resultCount strong {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ─── 卡片網格 ─── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+/* ─── 空狀態 ─── */
+.empty {
+  text-align: center;
+  color: var(--color-subtle);
+  padding: var(--space-10) 0;
+}
+
+/* ─── 響應式 ─── */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .searchBar__submit {
+    padding: var(--space-4);
+  }
+}

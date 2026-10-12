@@ -1,0 +1,386 @@
+/**
+ * NovelSite Design Tokens
+ * ========================
+ * 完整 CSS 變數設計系統
+ * 依據 design-system/MASTER.md 實作
+ *
+ * 主題層：
+ *  [data-theme="light"]   — 白紙模式（預設）
+ *  [data-theme="dark"]    — 夜間模式
+ *  [data-theme="eyecare"] — 護眼模式
+ */
+
+/* ─────────────────────────────────────────────
+   Google Fonts Import
+   ───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ─────────────────────────────────────────────
+   Root — 靜態 Token（不隨主題變動）
+   ───────────────────────────────────────────── */
+:root {
+  /* 字體族 */
+  --font-heading: 'Noto Serif TC', 'Noto Serif', 'Georgia', serif;
+  --font-body: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', 'Hiragino Sans', sans-serif;
+  --font-ui: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* 字體尺寸階層 */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-md: 1.125rem; /* 18px */
+  --text-lg: 1.25rem; /* 20px */
+  --text-xl: 1.5rem; /* 24px */
+  --text-2xl: 2rem; /* 32px */
+  --text-3xl: 3rem; /* 48px */
+  --text-4xl: 4rem; /* 64px */
+
+  /* 字重 */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* 行高 */
+  --leading-tight: 1.25;
+  --leading-snug: 1.5;
+  --leading-normal: 1.7;
+  --leading-relaxed: 1.9;
+  --leading-loose: 2.2;
+
+  /* 字間距 */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+
+  /* 間距系統（8px 基準格） */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.5rem; /* 24px */
+  --space-6: 2rem; /* 32px */
+  --space-8: 3rem; /* 48px */
+  --space-10: 4rem; /* 64px */
+  --space-12: 6rem; /* 96px */
+  --space-16: 8rem; /* 128px */
+
+  /* 圓角 */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-full: 9999px;
+
+  /* 陰影 */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.14), 0 8px 20px rgba(0, 0, 0, 0.08);
+
+  /* 過渡時間 */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 350ms;
+  --duration-page: 300ms;
+  --duration-hero: 700ms;
+
+  /* 緩動曲線 */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* 版面寬度 */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-reading: 680px; /* 閱讀最佳行寬 */
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1440px;
+
+  /* Z-index 層級 */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  /* 響應式斷點（媒體查詢用） */
+  --bp-sm: 375px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1440px;
+
+  /* 閱讀頁字體大小三段 */
+  --reader-font-sm: 0.875rem; /* 14px */
+  --reader-font-md: 1.125rem; /* 18px（預設） */
+  --reader-font-lg: 1.375rem; /* 22px */
+
+  /* 進度條高度 */
+  --progress-height: 3px;
+
+  /**
+   * 疊在飽和色塊（頭像、徽章）上的文字色。**三個主題共用同一個值**：
+   * 它要對比的是那個色塊本身，不是頁面背景，故不隨主題變動。
+   *
+   * FEAT-4 T151 新增：留言頭像的字色原本兩處各寫一次 `#fff`，
+   * 而 FR-064 要求本階段新增的樣式一律取自 token。既有 token 沒有這個語意
+   * （`--color-surface` 在夜間模式是深色，不能代用），故補一個。
+   */
+  --color-on-accent: #ffffff;
+
+  /**
+   * 疊在 Hero 底圖（首頁輪播、作品詳情頁）上的前景。**三個主題共用同一組值**：
+   * Hero 一律是「作品封面色 + 近黑遮罩」，三個主題下都是深底，
+   * 它要對比的是那層遮罩，不是頁面背景，故不隨主題變動。
+   *
+   * FEAT-6 修正（2026-08-19）新增：透明 Header 疊在 Hero 上時原本沿用主題文字色，
+   * 淺色主題的 `--color-fg-secondary` 是深褐色，等於深字壓深底，導覽列幾乎讀不到。
+   * `--hero-scrim` 是 Header 自帶的暗角 —— 對比 MUST NOT 交給個別作品的封面色決定
+   * （首頁 Hero 遮罩右端只剩 0.28 不透明度，遇上亮色封面就失守）。
+   */
+  --color-on-hero: rgba(255, 255, 255, 0.92);
+  --color-on-hero-strong: #ffffff;
+  --color-on-hero-hover-bg: rgba(255, 255, 255, 0.16);
+  --hero-scrim: linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
+  --hero-text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* ─────────────────────────────────────────────
+   Light Mode — 白紙閱讀主題（預設）
+   ───────────────────────────────────────────── */
+[data-theme='light'],
+:root:not([data-theme]) {
+  /* 品牌色 */
+  --color-primary: #3d2b1f;
+  --color-primary-hover: #2e1f15;
+  --color-secondary: #92400e;
+  --color-secondary-hover: #78350f;
+  --color-accent: #d97706;
+  --color-accent-hover: #b45309;
+  --color-accent-light: #fef3c7;
+
+  /* 背景層 */
+  --color-bg: #fdfaf5;
+  --color-bg-secondary: #f8f4ed;
+  --color-surface: #ffffff;
+  --color-surface-hover: #fdfaf5;
+  --color-muted: #f5f0e8;
+  --color-muted-hover: #ede7db;
+
+  /* 前景（文字）*/
+  --color-fg: #1a1a1a;
+  --color-fg-secondary: #3d3530;
+  --color-subtle: #78716c;
+  --color-placeholder: #a8a29e;
+
+  /* 邊框 */
+  --color-border: #e8e0d4;
+  --color-border-strong: #d6cab8;
+
+  /* 功能色 */
+  --color-success: #16a34a;
+  --color-success-light: #dcfce7;
+  --color-warning: #d97706;
+  --color-warning-light: #fef3c7;
+  --color-error: #dc2626;
+  --color-error-light: #fee2e2;
+  --color-info: #2563eb;
+  --color-info-light: #dbeafe;
+
+  /* 陰影（主題感知） */
+  --shadow-color: rgba(61, 43, 31, 0.08);
+  --shadow-sm: 0 1px 3px rgba(61, 43, 31, 0.08), 0 1px 2px rgba(61, 43, 31, 0.05);
+  --shadow-md: 0 4px 12px rgba(61, 43, 31, 0.1), 0 2px 6px rgba(61, 43, 31, 0.06);
+  --shadow-lg: 0 8px 24px rgba(61, 43, 31, 0.12), 0 4px 12px rgba(61, 43, 31, 0.07);
+
+  /* 遮罩 */
+  --color-overlay: rgba(26, 20, 15, 0.5);
+
+  /* 毛玻璃 */
+  --glass-bg: rgba(253, 250, 245, 0.88);
+  --glass-border: rgba(232, 224, 212, 0.6);
+  --glass-blur: blur(12px);
+
+  /* 捲軸 */
+  --scrollbar-thumb: #d6cab8;
+  --scrollbar-track: #f5f0e8;
+
+  /**
+   * 圖表資料序列色（FEAT-9 UI 重構 2026-09-06）。三個主題各有一組。
+   *
+   * **MUST NOT 直接拿 `--color-accent` / `--color-info` 當序列色**：那兩個是介面用色，
+   * 亮度是為「文字/邊框對比」挑的，不是為「兩條線彼此分得開」挑的。
+   * 三組值皆以 dataviz 的 `validate_palette.js` 六項檢查實跑通過
+   * （亮度帶、彩度下限、色覺障礙 ΔE、常人視覺 ΔE、對比），最差一組 protan ΔE 26.0。
+   * **換值前 MUST 重跑該驗證腳本，MUST NOT 用眼睛判斷**。
+   */
+  --viz-series-1: #d97706;
+  --viz-series-2: #2563eb;
+}
+
+/* ─────────────────────────────────────────────
+   Dark Mode — 夜間閱讀主題
+   ───────────────────────────────────────────── */
+[data-theme='dark'] {
+  /* 品牌色 */
+  --color-primary: #e8dcc8;
+  --color-primary-hover: #f0e8d4;
+  --color-secondary: #d4a96a;
+  --color-secondary-hover: #ddb87d;
+  --color-accent: #f59e0b;
+  --color-accent-hover: #fbbf24;
+  --color-accent-light: #451a03;
+
+  /* 背景層 */
+  --color-bg: #0f0e0c;
+  --color-bg-secondary: #141210;
+  --color-surface: #1c1a17;
+  --color-surface-hover: #221f1b;
+  --color-muted: #201d19;
+  --color-muted-hover: #272320;
+
+  /* 前景（文字）*/
+  --color-fg: #d4c9b5;
+  --color-fg-secondary: #b8aa95;
+  --color-subtle: #6b6560;
+  --color-placeholder: #4a4540;
+
+  /* 邊框 */
+  --color-border: #2e2a25;
+  --color-border-strong: #3d3830;
+
+  /* 功能色 */
+  --color-success: #4ade80;
+  --color-success-light: #052e16;
+  --color-warning: #fbbf24;
+  --color-warning-light: #451a03;
+  --color-error: #f87171;
+  --color-error-light: #450a0a;
+  --color-info: #60a5fa;
+  --color-info-light: #1e3a5f;
+
+  /* 陰影 */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* 遮罩 */
+  --color-overlay: rgba(0, 0, 0, 0.7);
+
+  /* 毛玻璃 */
+  --glass-bg: rgba(28, 26, 23, 0.9);
+  --glass-border: rgba(46, 42, 37, 0.6);
+  --glass-blur: blur(12px);
+
+  /* 捲軸 */
+  --scrollbar-thumb: #3d3830;
+  --scrollbar-track: #1c1a17;
+
+  --viz-series-1: #bf8420;
+  --viz-series-2: #4f8ae0;
+}
+
+/* ─────────────────────────────────────────────
+   Eye-Care Mode — 護眼閱讀主題
+   ───────────────────────────────────────────── */
+[data-theme='eyecare'] {
+  /* 品牌色 */
+  --color-primary: #3a2e22;
+  --color-primary-hover: #2e2318;
+  --color-secondary: #7c4c1e;
+  --color-secondary-hover: #6b3f17;
+  --color-accent: #b45309;
+  --color-accent-hover: #92400e;
+  --color-accent-light: #fef3c7;
+
+  /* 背景層 */
+  --color-bg: #f2ebdd;
+  --color-bg-secondary: #ede5d3;
+  --color-surface: #ede5d3;
+  --color-surface-hover: #e8dfc8;
+  --color-muted: #e8dfc8;
+  --color-muted-hover: #e0d5b8;
+
+  /* 前景（文字）*/
+  --color-fg: #3a2e22;
+  --color-fg-secondary: #4a3c2d;
+  --color-subtle: #7a6652;
+  --color-placeholder: #9e8a74;
+
+  /* 邊框 */
+  --color-border: #d8cdb8;
+  --color-border-strong: #c8baa2;
+
+  /* 功能色 */
+  --color-success: #15803d;
+  --color-success-light: #dcfce7;
+  --color-warning: #b45309;
+  --color-warning-light: #fef3c7;
+  --color-error: #b91c1c;
+  --color-error-light: #fee2e2;
+  --color-info: #1d4ed8;
+  --color-info-light: #dbeafe;
+
+  /* 陰影 */
+  --shadow-sm: 0 1px 3px rgba(58, 46, 34, 0.08), 0 1px 2px rgba(58, 46, 34, 0.05);
+  --shadow-md: 0 4px 12px rgba(58, 46, 34, 0.1), 0 2px 6px rgba(58, 46, 34, 0.06);
+  --shadow-lg: 0 8px 24px rgba(58, 46, 34, 0.12), 0 4px 12px rgba(58, 46, 34, 0.07);
+
+  /* 遮罩 */
+  --color-overlay: rgba(58, 46, 34, 0.5);
+
+  /* 毛玻璃 */
+  --glass-bg: rgba(242, 235, 221, 0.92);
+  --glass-border: rgba(216, 205, 184, 0.6);
+  --glass-blur: blur(12px);
+
+  /* 捲軸 */
+  --scrollbar-thumb: #c8baa2;
+  --scrollbar-track: #e8dfc8;
+
+  --viz-series-1: #b45309;
+  --viz-series-2: #1d4ed8;
+}
+
+/* ─────────────────────────────────────────────
+   系統深色模式自動偵測
+   （若使用者未手動選擇主題）
+   ───────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* 同 dark 主題，完整複製以確保可靠性 */
+    --color-primary: #e8dcc8;
+    --color-primary-hover: #f0e8d4;
+    --color-secondary: #d4a96a;
+    --color-secondary-hover: #ddb87d;
+    --color-accent: #f59e0b;
+    --color-accent-hover: #fbbf24;
+    --color-accent-light: #451a03;
+    --color-bg: #0f0e0c;
+    --color-bg-secondary: #141210;
+    --color-surface: #1c1a17;
+    --color-surface-hover: #221f1b;
+    --color-muted: #201d19;
+    --color-muted-hover: #272320;
+    --color-fg: #d4c9b5;
+    --color-fg-secondary: #b8aa95;
+    --color-subtle: #6b6560;
+    --color-placeholder: #4a4540;
+    --color-border: #2e2a25;
+    --color-border-strong: #3d3830;
+    --color-overlay: rgba(0, 0, 0, 0.7);
+    --glass-bg: rgba(28, 26, 23, 0.9);
+    --glass-border: rgba(46, 42, 37, 0.6);
+    --scrollbar-thumb: #3d3830;
+    --scrollbar-track: #1c1a17;
+  }
+}

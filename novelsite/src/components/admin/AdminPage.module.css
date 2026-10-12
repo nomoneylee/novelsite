@@ -1,0 +1,147 @@
+/**
+ * 管理後台頁面共用骨架（FEAT-9 UI 重構 2026-09-06）
+ * ====================================================
+ * 五個管理頁重複的「標題 + 說明 + 區塊卡片」在此定義一次。
+ * **MUST NOT 回頭在頁面裡寫 inline style** —— 重構前五個頁面各自寫一份
+ * `style={{ marginBottom: 'var(--space-lg)' }}`，而 `--space-lg` 根本不存在，
+ * 於是五個頁面同時沒有間距，且沒有任何一處看得出它們本該一致。
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ── 頁首 ───────────────────────────────────── */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  align-self: flex-start;
+  min-height: 32px;
+  margin-bottom: var(--space-1);
+  color: var(--color-fg-secondary);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  letter-spacing: var(--tracking-tight);
+}
+
+.subtitle {
+  max-width: 68ch; /* 說明文字的行寬上限，避免在寬螢幕拉成一整行 */
+  color: var(--color-fg-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+/* ── 區塊 ───────────────────────────────────── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.sectionCount {
+  color: var(--color-subtle);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 卡片 ───────────────────────────────────── */
+.card {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── 定義清單（詳情頁的基本資料）───────────── */
+.definitionList {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.definitionTerm {
+  color: var(--color-subtle);
+  font-weight: var(--font-weight-medium);
+}
+
+.definitionValue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-fg);
+  overflow-wrap: anywhere; /* 長 Email 與 cuid 不該把格線撐爆 */
+}
+
+.muted {
+  color: var(--color-subtle);
+  font-size: var(--text-xs);
+}
+
+/* 數字欄位一律等寬數字，避免逐列跳動 */
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 空態（純文字版，供 RSC 使用）──────────── */
+.emptyNote {
+  padding: var(--space-6) var(--space-5);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-secondary);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .definitionList {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1) 0;
+  }
+
+  .definitionValue {
+    margin-bottom: var(--space-3);
+  }
+
+  .card {
+    padding: var(--space-4);
+  }
+}

@@ -1,0 +1,146 @@
+/* 批次操作列（FEAT-8 FR-003～FR-027a）。一律走既有 design token，不硬編色碼（憲章技術約束） */
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-muted);
+}
+
+/* 選取數與上限訊息共用的即時區域（FR-003／FR-031） */
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+/* 選取數（FR-003）。MUST 隨時可見 —— 作者按下批次操作前唯一能核對的數字 */
+.count {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-fg);
+}
+
+/* 三個選取輔助動作（FR-001） */
+.helpers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/*
+  停用原因與上限訊息（FR-005a／FR-005）。**是畫面上的文字**，不是 `title` 屬性 ——
+  停用的按鈕不進 Tab 序，把原因藏在提示泡泡裡，讀螢幕的作者就永遠讀不到它。
+  語意由文字承擔，顏色只是強調。
+*/
+.hint {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-warning);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+/* 確認畫面與結果摘要共用的統計行 */
+.stats {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+.stats__note {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+}
+
+/*
+  章號區段（FR-025b）：**MUST 全部列出**，不設門檻、不摺疊、不截斷。
+  會壓出上百段代表作者勾的是一個很散的集合 —— 那時逐段列出正是他唯一能據以確認的東西，
+  故限制的是容器高度而不是內容。
+*/
+.ranges {
+  max-height: 12rem;
+  overflow-y: auto;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--color-fg);
+  overflow-wrap: anywhere;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* 結果摘要（FR-027）。成功與失敗共用同一個區域，語意由文字承擔而非顏色 */
+.result {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+/*
+  摘要內的章號區段（FR-027a）。同 `.ranges`：限制的是容器高度而不是內容 ——
+  MUST 全部列出，不設門檻、不摺疊、不截斷（FR-025b）
+*/
+.result__ranges {
+  display: block;
+  max-height: 8rem;
+  overflow-y: auto;
+  margin-top: var(--space-1);
+  color: var(--color-subtle);
+  overflow-wrap: anywhere;
+}
+
+.result__warning {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-warning);
+}
+
+.result__error {
+  color: var(--color-error);
+}
+
+/*
+  刪除確認的警語與二次確認（FR-016）。**只在選取含已發佈章節時出現** ——
+  全為草稿時施加同等摩擦，只會讓作者學會無視所有確認步驟（FR-017）。
+  語意由文字承擔，顏色只是強調：色盲或高對比模式下這一句照樣讀得到。
+*/
+.warning {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.ack {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}

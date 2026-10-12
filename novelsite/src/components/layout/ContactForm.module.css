@@ -1,0 +1,41 @@
+/* ─────────────────────────────────────────────
+   ContactForm — 聯絡表單
+   ───────────────────────────────────────────── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notice {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+  margin: 0;
+}
+
+.error {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  margin: 0;
+}
+
+/*
+   honeypot 容器（FEAT-5 T054）。**MUST NOT 用 `display: none`**：
+   部分機器人會略過完全不顯示的欄位，而那正是這個欄位要釣的對象。
+   移出視線之外即可 —— 對人不可見的效果相同，對機器人則仍然存在。
+*/
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

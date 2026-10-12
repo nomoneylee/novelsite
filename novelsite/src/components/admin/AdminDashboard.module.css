@@ -1,0 +1,95 @@
+/**
+ * 儀表板總覽（FEAT-9 UI 重構 2026-09-06）
+ * ==========================================
+ * 指標卡採「標籤 → 數值 → 拆解」三層。**數值 MUST 用 tabular-nums**：
+ * 儀表板的四張卡並排，比例字寬會讓數字上緣參差，看起來像沒對齊。
+ */
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.metricLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-fg-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.metricIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-light);
+  color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+.metricValue {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+}
+
+.metricBreakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-subtle);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.metricBreakdown li {
+  white-space: nowrap;
+}
+
+/*
+  違規下架 > 0 時要跳出來。MUST NOT 只換顏色 —— 前綴的「⚠」由圖示元件提供，
+  這裡只負責色與字重（WCAG 1.4.1）
+*/
+.alert {
+  color: var(--color-error);
+  font-weight: var(--font-weight-semibold);
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .metricCard {
+    padding: var(--space-3);
+  }
+
+  .metricValue {
+    font-size: var(--text-xl);
+  }
+}

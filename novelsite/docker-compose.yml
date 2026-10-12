@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: novelsite
+      POSTGRES_PASSWORD: novelsite
+      POSTGRES_DB: novelsite_dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - novelsite_postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+
+volumes:
+  novelsite_postgres_data:

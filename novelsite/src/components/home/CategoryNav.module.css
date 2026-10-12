@@ -1,0 +1,151 @@
+/* ─────────────────────────────────────────────
+   CategoryNav — 分類快捷導航 Bar
+   ───────────────────────────────────────────── */
+
+.catNav {
+  padding: var(--space-12) 0;
+  background: var(--color-muted);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.catNav__inner {
+  max-width: var(--container-2xl);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+/* ─── 標題 ─── */
+.catNav__header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.catNav__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-2);
+}
+
+.catNav__sub {
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  letter-spacing: normal;
+  line-height: var(--leading-normal);
+}
+
+/* ─── 分類網格 ─── */
+.catNav__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+}
+
+.catNav__empty {
+  padding: var(--space-6) 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  text-align: center;
+}
+
+/* ─── 分類項目 ─── */
+.catNav__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out);
+}
+
+.catNav__item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--cat-color, var(--color-accent));
+  background-color: var(--cat-bg, var(--color-muted));
+  text-decoration: none;
+}
+
+.catNav__item__emoji {
+  font-size: 2rem;
+  line-height: 1;
+  transition: transform var(--duration-base) var(--ease-bounce);
+}
+
+.catNav__item:hover .catNav__item__emoji {
+  transform: scale(1.2);
+}
+
+.catNav__item__label {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.catNav__item:hover .catNav__item__label {
+  color: var(--cat-color, var(--color-accent));
+}
+
+.catNav__item__desc {
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  text-align: center;
+  line-height: 1.4;
+  letter-spacing: normal;
+}
+
+/* 底部色條指示器 */
+.catNav__item__indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--cat-color, var(--color-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-base) var(--ease-out);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.catNav__item:hover .catNav__item__indicator {
+  transform: scaleX(1);
+}
+
+/* ─── 響應式 ─── */
+@media (max-width: 1024px) {
+  .catNav__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .catNav__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+
+  .catNav__item {
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .catNav__item__desc {
+    display: none;
+  }
+}

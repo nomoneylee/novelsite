@@ -1,0 +1,160 @@
+/**
+ * 管理後台共用控制項（FEAT-9 UI 重構 2026-09-06）
+ * ==================================================
+ * 篩選列、搜尋框、下拉、列內操作鈕的**單一定義處**。
+ *
+ * **為什麼要有這一支**：重構前 `UserManagementTable.module.css` 與
+ * `NovelManagementTable.module.css` 是逐字重複的兩份（連 `rgba(239,68,68,.3)`
+ * 這種寫死色都一模一樣），改一邊忘另一邊必然發生，而且沒有任何地方看得出它們本該一致。
+ * 各元件的 module 以 `composes` 引用本檔，TSX 的 `styles.xxx` 寫法不變。
+ *
+ * 危險色 MUST 取自 `--color-error` / `--color-success`，MUST NOT 寫死 rgba：
+ * 寫死的那組在夜間模式與護眼模式下都不對。
+ */
+
+/* ── 篩選列 ─────────────────────────────────── */
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.fieldGrow {
+  flex: 1 1 220px;
+}
+
+.label {
+  color: var(--color-fg-secondary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.searchInput,
+.select {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-fg);
+  font-family: inherit;
+  font-size: var(--text-sm);
+}
+
+.searchInput::placeholder {
+  color: var(--color-placeholder);
+}
+
+.searchInput:focus-visible,
+.select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+  border-color: var(--color-accent);
+}
+
+/* ── 列內操作 ───────────────────────────────── */
+.actionsCell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  /*
+    32px 低於 44px 的觸控下限，故以 `::after` 把命中區撐開到 44px 而不撐大視覺尺寸 ——
+    後台一列常有 4~5 個操作，真做成 44px 高會讓表格變成一頁三列
+  */
+  position: relative;
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-fg);
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.actionBtn::after {
+  content: '';
+  position: absolute;
+  inset: -6px 0;
+}
+
+.actionBtn:hover:not(:disabled) {
+  background: var(--color-muted);
+  border-color: var(--color-accent);
+}
+
+.actionBtn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.actionBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dangerBtn {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.dangerBtn:hover:not(:disabled) {
+  background: var(--color-error-light);
+  border-color: var(--color-error);
+}
+
+.successBtn {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.successBtn:hover:not(:disabled) {
+  background: var(--color-success-light);
+  border-color: var(--color-success);
+}
+
+/* ── 版面容器 ───────────────────────────────── */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actionBtn {
+    transition: none;
+  }
+}

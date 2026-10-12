@@ -1,0 +1,133 @@
+/**
+ * 管理後台外殼版面（FEAT-9 UI 重構 2026-09-06）
+ * ================================================
+ * **所有 token MUST 取自 `src/styles/design-tokens.css` 的實際名稱**。
+ * 重構前這裡用的是 `--color-text-primary`／`--space-md` 等**不存在的名稱**，
+ * 於是每一個 padding 與文字色都解析成空值 —— 版面塌掉的原因是樣式根本沒套用，
+ * 不是設計不好看。改動時請先確認 token 真的存在於 design-tokens.css。
+ *
+ * 版面策略（adaptive navigation）：
+ *   ≥1024px 側邊欄常駐（sticky 滿版高）
+ *   <1024px 側邊欄轉為頂部橫向捲動導覽列（不做漢堡選單：後台導覽只有 5 項，
+ *           藏進抽屜反而多一次點擊，且抽屜要處理焦點鎖定與 ESC，成本不划算）
+ */
+
+.container {
+  display: flex;
+  min-height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+.mainWrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* 沒有它，表格的 overflow-x 會把整個版面撐寬 */
+}
+
+/* ─────────────────────────────────────────────
+   頂部列 —— sticky，捲動時仍看得到身分與返回前台
+   ───────────────────────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 56px;
+  padding: var(--space-2) var(--space-5);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-light);
+  color: var(--color-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  white-space: nowrap;
+}
+
+.homeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-fg-secondary);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.homeLink:hover {
+  background: var(--color-muted);
+  color: var(--color-fg);
+}
+
+/* ─────────────────────────────────────────────
+   內容區
+   ───────────────────────────────────────────── */
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  padding: var(--space-5);
+}
+
+@media (max-width: 1023px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .header {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .content {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 640px) {
+  /* 手機上「返回前台」的字省掉，只留圖示 —— 標題與角色徽章優先 */
+  .homeLink span {
+    display: none;
+  }
+
+  .content {
+    padding: var(--space-3);
+  }
+}

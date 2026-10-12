@@ -1,0 +1,144 @@
+/**
+ * 管理後台共用資料表（FEAT-9 UI 重構 2026-09-06）
+ * ==================================================
+ * 三個設計約束，改動前請先讀：
+ * 1. **表頭 sticky**：後台清單動輒 20 列，捲到一半就不知道哪欄是哪欄。
+ * 2. **橫向捲動只發生在表格自己身上**（`.tableWrapper`）——
+ *    整頁橫捲會讓側邊欄跟著跑掉。父層的 `min-width: 0` 是這件事的前提。
+ * 3. **`:hover` MUST NOT 是唯一的列指示**：鍵盤使用者用 `:focus-within` 走同一條路。
+ */
+
+.tableContainer {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.tableWrapper {
+  width: 100%;
+  max-height: 70dvh;
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate; /* sticky 表頭下 collapse 會讓邊框消失 */
+  border-spacing: 0;
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-strong);
+  color: var(--color-fg-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  white-space: nowrap;
+}
+
+.td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-fg);
+  vertical-align: middle;
+  line-height: var(--leading-snug);
+}
+
+.tr:last-child .td {
+  border-bottom: none;
+}
+
+.tr:hover .td,
+.tr:focus-within .td {
+  background: var(--color-surface-hover);
+}
+
+/* ── 分頁 ───────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-secondary);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.paginationButtons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.pageBtn {
+  min-height: 36px;
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-fg);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--color-muted);
+  border-color: var(--color-accent);
+}
+
+.pageBtn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.pageBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .th,
+  .td {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .paginationButtons {
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pageBtn {
+    transition: none;
+  }
+}
+
+/* 供 RSC 直接手寫 <table> 時使用（詳情頁的處置紀錄），與 .table 同規格 */
+.plainTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--text-sm);
+  text-align: left;
+}

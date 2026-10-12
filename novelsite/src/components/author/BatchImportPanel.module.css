@@ -1,0 +1,148 @@
+/* 批次匯入面板（FEAT-7 FR-001～FR-004e）。一律走既有 design token，不硬編色碼（憲章技術約束） */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--color-muted);
+}
+
+.pickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 16rem;
+  flex: 1;
+}
+
+.field__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-fg);
+}
+
+.field__hint {
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  margin: 0;
+}
+
+.input {
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+/* 摘要列（FR-002d）：上千列的清單裡，作者唯一會確實讀到的一行 */
+.summary {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 20rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+.row__name {
+  font-weight: 600;
+}
+
+.row__meta {
+  color: var(--color-subtle);
+  font-size: var(--text-xs);
+}
+
+.row__verdict {
+  margin-left: auto;
+  font-size: var(--text-xs);
+}
+
+.row__verdict--error {
+  color: var(--color-error);
+}
+
+.row__verdict--warning {
+  color: var(--color-warning);
+}
+
+.row__verdict--skipped {
+  color: var(--color-subtle);
+}
+
+.row__verdict--ok {
+  color: var(--color-success);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.notice {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-fg);
+}
+
+.notice--error {
+  color: var(--color-error);
+}
+
+.notice:empty {
+  display: none;
+}
+
+/* 批次級上限的預判訊息（FR-002b、T040）。逐檔的單檔超限走 .row__verdict--error，不在此 */
+.limits {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-error);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-error);
+}

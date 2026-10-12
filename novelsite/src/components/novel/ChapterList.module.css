@@ -1,0 +1,233 @@
+/* ─────────────────────────────────────────────
+   ChapterList.module.css
+   ───────────────────────────────────────────── */
+
+.list {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+}
+
+/* 標題列 */
+.list__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.list__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin: 0;
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--color-accent);
+  display: inline-block;
+}
+
+.list__header__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.list__count {
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+}
+
+.list__shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  text-decoration: none !important;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.list__shortcut:hover {
+  color: var(--color-fg);
+  border-color: var(--color-fg);
+  background: var(--color-muted);
+  text-decoration: none !important;
+}
+
+.list__shortcut--accent {
+  color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+}
+
+.list__shortcut--accent:hover {
+  background: var(--color-accent) !important;
+  color: #fff !important;
+}
+
+/* 搜尋框 */
+.list__search {
+  position: relative;
+  margin-bottom: var(--space-5);
+}
+
+.list__search__icon {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-subtle);
+  pointer-events: none;
+}
+
+.list__search__input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4) var(--space-3) calc(var(--space-4) + 24px);
+  font-size: var(--text-sm);
+  font-family: var(--font-body);
+  color: var(--color-fg);
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.list__search__input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.list__search__result {
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  margin-bottom: var(--space-4);
+}
+
+/* tablist 補丁：覆寫 pills 讓它橫向捲動 */
+.list__tablist {
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+/* 章節格 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: var(--space-2);
+}
+
+.grid__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none !important;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.grid__item:hover {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  text-decoration: none !important;
+}
+
+.grid__item--latest {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.grid__item__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.grid__item__num {
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  font-family: var(--font-ui);
+}
+
+.grid__item__badge {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: #fff;
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+  padding: 1px 6px;
+}
+
+.grid__item__title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg);
+  line-height: 1.4;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.grid__item__meta {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  margin-top: 2px;
+}
+
+.grid__empty {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--color-subtle);
+  font-size: var(--text-sm);
+}
+
+/* 空狀態 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10);
+  color: var(--color-subtle);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .list__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

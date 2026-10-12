@@ -1,0 +1,83 @@
+{
+  "name": "novelsite",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
+    "db:schema": "tsx scripts/build-schema.ts",
+    "db:generate": "npm run db:schema && prisma generate",
+    "db:migrate": "npm run db:schema && prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:clear-content": "tsx scripts/clear-content.ts",
+    "db:reset": "npm run db:schema && prisma migrate reset --force",
+    "cron:rollup": "tsx scripts/cron.ts rollup",
+    "cron:rankings": "tsx scripts/cron.ts rankings",
+    "cron:publish": "tsx scripts/cron.ts publish",
+    "admin:promote": "tsx scripts/admin-promote.ts",
+    "test": "npm run db:generate && vitest run",
+    "test:integration": "vitest run -c vitest.integration.config.mts",
+    "test:a11y": "vitest run -c vitest.a11y.config.mts",
+    "test:e2e": "playwright test",
+    "test:basepath": "vitest run -c vitest.basepath.config.mts",
+    "test:all": "npm run test && npm run test:integration && npm run test:a11y && npm run test:e2e && npm run test:basepath"
+  },
+  "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
+    "@phosphor-icons/react": "^2.1.10",
+    "@prisma/adapter-better-sqlite3": "^7.9.0",
+    "@prisma/adapter-pg": "^7.9.0",
+    "@prisma/client": "^7.9.0",
+    "chart.js": "^4.5.1",
+    "gsap": "^3.15.0",
+    "jose": "^6.2.4",
+    "next": "16.2.10",
+    "pg": "^8.13.1",
+    "prisma": "^7.9.0",
+    "react": "19.2.4",
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^20",
+    "@types/pg": "^8.11.10",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
+    "axe-core": "^4.12.1",
+    "dotenv": "^16.4.7",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "husky": "^9.1.7",
+    "jsdom": "^25.0.1",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.5",
+    "tsx": "^4.23.1",
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.1.10"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{css,json,md}": [
+      "prettier --write"
+    ]
+  }
+}

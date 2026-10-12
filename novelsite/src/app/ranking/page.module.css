@@ -1,0 +1,39 @@
+/* ─────────────────────────────────────────────
+   ranking/page.module.css
+   ───────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+}
+
+.page__inner {
+  padding-block: var(--space-8) var(--space-12);
+}
+
+.page__header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.page__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-2);
+}
+
+.page__subtitle {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  color: var(--color-subtle);
+}
+
+@media (max-width: 767px) {
+  .page__inner {
+    padding-block: var(--space-6) var(--space-10);
+  }
+
+  .page__title {
+    font-size: var(--text-2xl);
+  }
+}

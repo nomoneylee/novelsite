@@ -1,0 +1,80 @@
+/**
+ * 作品／章節管理表格（FEAT-9 UI 重構 2026-09-06）
+ * `ChapterManagementTable` 共用本檔（兩張表的操作語彙一致：下架／恢復／刪除）。
+ * 共用控制項定義在 `AdminControls.module.css`。
+ */
+
+.container {
+  composes: container from './AdminControls.module.css';
+}
+
+.filterBar {
+  composes: filterBar from './AdminControls.module.css';
+}
+
+.field {
+  composes: field from './AdminControls.module.css';
+}
+
+.fieldGrow {
+  composes: field fieldGrow from './AdminControls.module.css';
+}
+
+.label {
+  composes: label from './AdminControls.module.css';
+}
+
+.searchInput {
+  composes: searchInput from './AdminControls.module.css';
+}
+
+.select {
+  composes: select from './AdminControls.module.css';
+}
+
+.actionsCell {
+  composes: actionsCell from './AdminControls.module.css';
+}
+
+.actionBtn {
+  composes: actionBtn from './AdminControls.module.css';
+}
+
+.dangerBtn {
+  composes: dangerBtn from './AdminControls.module.css';
+}
+
+.successBtn {
+  composes: successBtn from './AdminControls.module.css';
+}
+
+/* ── 作品／章節欄位 ─────────────────────────── */
+.titleCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.titleLink {
+  color: var(--color-fg);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+.titleLink:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.titleMeta {
+  color: var(--color-subtle);
+  font-size: var(--text-xs);
+}
+
+.numericCell {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-xs);
+  color: var(--color-fg-secondary);
+  white-space: nowrap;
+}

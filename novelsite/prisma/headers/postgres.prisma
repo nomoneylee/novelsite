@@ -1,0 +1,14 @@
+// PostgreSQL 軌的 datasource + generator 標頭（正式目標與雙軌驗收）。
+// 由 scripts/build-schema.ts 與 prisma/base.prisma 拼接為
+// prisma/generated/schema.postgres.prisma，本檔不得單獨使用。
+
+generator client {
+  provider = "prisma-client"
+  output   = "../../src/generated/prisma"
+}
+
+// Prisma 7.9：datasource.url 不再支援寫在 schema 檔，連線字串一律來自 prisma.config.ts
+// （見 prisma.config.ts、research.md R-3a 的修正）
+datasource db {
+  provider = "postgresql"
+}

@@ -1,0 +1,73 @@
+/* ─────────────────────────────────────────────
+   categories/[id]/page.module.css — 分類詳情
+   ───────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+}
+
+.hero {
+  background: var(--cat-bg, var(--color-muted));
+  border-bottom: 1px solid var(--color-border);
+  padding-block: var(--space-8);
+}
+
+.hero__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  text-decoration: none;
+  width: fit-content;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.backLink:hover {
+  color: var(--cat-color, var(--color-accent));
+}
+
+.hero__main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.hero__emoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.hero__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  color: var(--cat-color, var(--color-primary));
+  margin-bottom: var(--space-1);
+}
+
+.hero__desc {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  color: var(--color-subtle);
+}
+
+.page__body {
+  padding-block: var(--space-8) var(--space-12);
+}
+
+@media (max-width: 640px) {
+  .hero__emoji {
+    font-size: 2.5rem;
+  }
+
+  .hero__title {
+    font-size: var(--text-2xl);
+  }
+}

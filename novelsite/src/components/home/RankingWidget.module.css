@@ -1,0 +1,246 @@
+/* ─────────────────────────────────────────────
+   RankingWidget — 本週熱門排行 Widget
+   ───────────────────────────────────────────── */
+
+.widget {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+/* ─── 標題列 ─── */
+.widget__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-muted);
+}
+
+.widget__header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.widget__header__icon {
+  color: #f59e0b;
+}
+
+.widget__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.widget__more {
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  text-decoration: none;
+  font-family: var(--font-ui);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.widget__more:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+/* ─── 榜單 ─── */
+.widget__list {
+  list-style: none;
+  padding: var(--space-2) 0;
+  margin: 0;
+}
+
+/* ─── 榜單項目 ─── */
+.item {
+  margin-top: 0;
+}
+
+.item__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.item__link:hover {
+  background-color: var(--color-muted);
+  text-decoration: none;
+}
+
+/* ─── 排名 Badge ─── */
+.item__rank {
+  flex-shrink: 0;
+  width: 28px;
+  display: flex;
+  justify-content: center;
+}
+
+.badge {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.badge--gold {
+}
+.badge--silver {
+}
+.badge--bronze {
+}
+
+.badge__num {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-subtle);
+  letter-spacing: 0.02em;
+}
+
+/* ─── 封面小圖 ─── */
+.item__cover {
+  flex-shrink: 0;
+  width: 36px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.item__cover__initial {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.2);
+  user-select: none;
+  line-height: 1;
+}
+
+/* ─── 書籍資訊 ─── */
+.item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg);
+  line-height: var(--leading-snug);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  letter-spacing: normal;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.item__link:hover .item__title {
+  color: var(--color-accent);
+}
+
+.item__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-subtle);
+  margin-top: 2px;
+  letter-spacing: normal;
+  line-height: var(--leading-normal);
+}
+
+.item__author {
+}
+
+.item__sep {
+  opacity: 0.4;
+}
+
+.item__category {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ─── 變化指示 ─── */
+.item__change {
+  flex-shrink: 0;
+}
+
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-ui);
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+}
+
+.change--up {
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+}
+
+.change--down {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.change--new {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.change--same {
+  background: var(--color-muted);
+  color: var(--color-subtle);
+}
+
+/* ─── 底部 ─── */
+.widget__footer {
+  padding: var(--space-3) var(--space-5) var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.widget__footer__btn {
+  display: block;
+  text-align: center;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-family: var(--font-ui);
+  color: var(--color-subtle);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.widget__footer__btn:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background-color: var(--color-accent-light);
+  text-decoration: none;
+}
+
+/* 空狀態（FEAT-4 T142）：示範資料不再灌入手寫名次，故空榜是新站台的正常樣貌 */
+.widget__empty {
+  padding: var(--space-4) 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-subtle);
+  text-align: center;
+}

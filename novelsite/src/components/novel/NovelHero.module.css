@@ -1,0 +1,363 @@
+/* ─────────────────────────────────────────────
+   NovelHero.module.css
+   ───────────────────────────────────────────── */
+
+/* Hero 容器 */
+.hero {
+  position: relative;
+  padding-block: var(--space-12) var(--space-10);
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+}
+
+/* 背景漸層 */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__bg__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.75) 60%,
+    var(--color-bg) 100%
+  );
+}
+
+/* Hero 內容（雙欄） */
+.hero__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--space-8);
+  align-items: flex-start;
+}
+
+@media (max-width: 767px) {
+  .hero__content {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .hero {
+    padding-block: var(--space-10) var(--space-8);
+    min-height: unset;
+  }
+}
+
+/* 封面圖 */
+.hero__cover {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.hero__cover__inner {
+  width: 200px;
+  height: 280px;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .hero__cover__inner {
+    width: 140px;
+    height: 196px;
+    margin-inline: auto;
+  }
+}
+
+.hero__cover__initial {
+  font-family: var(--font-heading);
+  font-size: 72px;
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  line-height: 1;
+}
+
+/* 狀態徽章 */
+.hero__status {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  border: 2px solid var(--color-bg);
+}
+
+.status--ongoing {
+  background: #16a34a;
+  color: #fff;
+}
+
+.status--completed {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.status--hiatus {
+  background: var(--color-subtle);
+  color: #fff;
+}
+
+/* 書籍資訊 */
+.hero__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+}
+
+/* 標籤群 */
+.hero__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* 書名 */
+.hero__title {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--text-xl), 4vw, var(--text-3xl));
+  font-weight: var(--font-weight-bold);
+  color: #fff;
+  line-height: 1.2;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* 作者 */
+.hero__author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.hero__author__label {
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.55);
+  padding: 2px var(--space-2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.hero__author__name {
+  font-size: var(--text-base);
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 評分 */
+.hero__rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.star__filled {
+  color: var(--color-accent);
+  font-size: 20px;
+}
+
+.star__empty {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 20px;
+}
+
+.star__half {
+  color: var(--color-accent);
+  font-size: 20px;
+  opacity: 0.6;
+}
+
+.hero__rating__score {
+  margin-left: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+}
+
+.hero__rating__count {
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Meta chips */
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.hero__meta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* CTA 按鈕群 */
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* 主要 CTA — Link 樣式 */
+.hero__btn__primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 24px;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-ui);
+  color: #fff !important;
+  background: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  text-decoration: none !important;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.hero__btn__primary:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.35);
+  text-decoration: none !important;
+}
+
+/* 次要 CTA */
+.hero__btn__secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 24px;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-ui);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.hero__btn__secondary:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+/* 書架已收藏狀態 */
+.hero__btn__secondary--active {
+  background: rgba(217, 119, 6, 0.3) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+}
+
+.hero__btn__secondary--active:hover {
+  background: rgba(217, 119, 6, 0.5) !important;
+}
+
+/* 圖示按鈕 */
+.hero__btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.hero__btn__icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* 作者簡介 */
+.hero__author__bio {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-top: var(--space-2);
+}
+
+.hero__author__avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  color: #fff;
+}
+
+.hero__author__bio__name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 4px;
+}
+
+.hero__author__bio__text {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
